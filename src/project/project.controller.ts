@@ -20,42 +20,36 @@ export class ProjectController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getAllByUserId(@UserId() userId: number) {
-    const projects = await this.projectService.findAllByUserId(userId);
+  async getAll(@UserId() userId: number) {
+    const projects = await this.projectService.findAll(userId);
     return projects;
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async getOneByIdAndUserId(
+  async getOneById(
     @UserId() userId: number,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    const project = await this.projectService.findOneByIdAndUserId(userId, id);
+    const project = await this.projectService.findOneById(userId, id);
     return project;
   }
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async createByUserId(
-    @UserId() userId: number,
-    @Body() projectDto: CreateProjectDto,
-  ) {
-    const project = await this.projectService.createByUserId(
-      userId,
-      projectDto,
-    );
+  async create(@UserId() userId: number, @Body() projectDto: CreateProjectDto) {
+    const project = await this.projectService.create(userId, projectDto);
     return project;
   }
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
-  async updateOneByIdAndUserId(
+  async updateById(
     @UserId() userId: number,
     @Param('id', ParseIntPipe) id: number,
     @Body() projectDto: CreateProjectDto,
   ) {
-    const project = await this.projectService.updateOneByIdAndUserId(
+    const project = await this.projectService.updateById(
       userId,
       id,
       projectDto,
@@ -65,14 +59,11 @@ export class ProjectController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async removeOneByIdAndUserId(
+  async removeById(
     @UserId() userId: number,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    const project = await this.projectService.removeOneByIdAndUserId(
-      userId,
-      id,
-    );
+    const project = await this.projectService.removeById(userId, id);
     return project;
   }
 }

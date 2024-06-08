@@ -31,6 +31,9 @@ export class AuthService {
     };
     const user = await this.userService.createUser(userWithHash);
     const token = this.generateToken(user);
+
+    delete user.password;
+
     return {
       user: user,
       token: token,

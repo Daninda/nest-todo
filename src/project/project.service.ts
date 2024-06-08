@@ -16,18 +16,76 @@ export class ProjectService {
     private userService: UserService,
   ) {}
 
-  async findAllByUserId(id: number) {
-    const projects = await this.projectRepository.findBy({ user: { id: id } });
+  async findAll(userId: number) {
+    const projects = await this.projectRepository.findBy({
+      user: { id: userId },
+    });
 
     return projects;
   }
 
-  async findOneByIdAndUserId(userId: number, id: number) {
+  async findOneById(userId: number, id: number) {
+    const project = await this.checkProjectAbility(userId, id);
+
+    return project;
+  }
+
+  async create(userId: number, projectDto: CreateProjectDto) {
+    const user = await this.userService.findOneById(userId);
+    const { id } = await this.projectRepository.save({
+      name: projectDto.name,
+      description: projectDto.description,
+      user: user,
+    });
+    return await this.projectRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: {
+        columns: {
+          tasks: true,
+        },
+      },
+    });
+  }
+
+  async updateById(userId: number, id: number, projectDto: CreateProjectDto) {
+    const project = await this.checkProjectAbility(userId, id);
+
+    const updatedProject = this.projectRepository.merge(project, {
+      name: projectDto.name,
+      description: projectDto.description,
+    });
+
+    await this.projectRepository.save(updatedProject);
+
+    return updatedProject;
+  }
+
+  async removeById(userId: number, id: number) {
+    const project = await this.checkProjectAbility(userId, id);
+
+    await this.projectRepository.remove(project);
+
+    return project.id;
+  }
+
+  async checkProjectAbility(userId: number, projectId: number) {
     const project = await this.projectRepository.findOne({
-      where: { id: id },
+      where: { id: projectId },
+      order: {
+        columns: {
+          position: 'ASC',
+          tasks: {
+            position: 'ASC',
+          },
+        },
+      },
       relations: {
         user: true,
-        columns: { tasks: true },
+        columns: {
+          tasks: true,
+        },
       },
     });
 
@@ -42,65 +100,5 @@ export class ProjectService {
     delete project.user;
 
     return project;
-  }
-
-  async createByUserId(userId: number, projectDto: CreateProjectDto) {
-    const user = await this.userService.findOneById(userId);
-    const project = await this.projectRepository.save({
-      name: projectDto.name,
-      description: projectDto.description,
-      user: user,
-    });
-    delete project.user;
-    return project;
-  }
-
-  async updateOneByIdAndUserId(
-    userId: number,
-    id: number,
-    projectDto: CreateProjectDto,
-  ) {
-    const exists = await this.projectRepository.findOne({
-      where: { id: id },
-      relations: { user: true },
-    });
-
-    if (!exists) {
-      throw new BadRequestException('This project does not exist');
-    }
-
-    if (exists.user.id !== userId) {
-      throw new ForbiddenException('Unable to access the project');
-    }
-
-    const updatedProject = this.projectRepository.merge(exists, {
-      name: projectDto.name,
-      description: projectDto.description,
-    });
-
-    await this.projectRepository.save(updatedProject);
-
-    delete updatedProject.user;
-
-    return updatedProject;
-  }
-
-  async removeOneByIdAndUserId(userId: number, id: number) {
-    const exists = await this.projectRepository.findOne({
-      where: { id: id },
-      relations: { user: true },
-    });
-
-    if (!exists) {
-      throw new BadRequestException('This project does not exist');
-    }
-
-    if (exists.user.id !== userId) {
-      throw new ForbiddenException('Unable to access the project');
-    }
-
-    const removedProject = await this.projectRepository.remove(exists);
-
-    return removedProject;
   }
 }

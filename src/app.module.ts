@@ -10,7 +10,6 @@ import { Task } from './task/task.model';
 import { TaskService } from './task/task.service';
 import { User } from './user/user.model';
 import { UserModule } from './user/user.module';
-import { CheckAccessModule } from './check-access/check-access.module';
 
 @Module({
   imports: [
@@ -32,7 +31,6 @@ import { CheckAccessModule } from './check-access/check-access.module';
     AuthModule,
     ProjectModule,
     ColumnModule,
-    CheckAccessModule,
   ],
   controllers: [],
   providers: [TaskService],

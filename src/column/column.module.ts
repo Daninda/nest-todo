@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthService } from 'src/auth/auth.service';
-import { ProjectService } from 'src/project/project.service';
-import { UserService } from 'src/user/user.service';
+import { AuthModule } from 'src/auth/auth.module';
+import { ProjectModule } from 'src/project/project.module';
+import { UserModule } from 'src/user/user.module';
 import { ColumnController } from './column.controller';
 import { TodoColumn } from './column.model';
 import { ColumnService } from './column.service';
@@ -11,9 +11,9 @@ import { ColumnService } from './column.service';
   providers: [ColumnService],
   controllers: [ColumnController],
   imports: [
-    AuthService,
-    UserService,
-    ProjectService,
+    AuthModule,
+    UserModule,
+    ProjectModule,
     TypeOrmModule.forFeature([TodoColumn]),
   ],
 })
