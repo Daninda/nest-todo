@@ -13,31 +13,32 @@ import {
 
 @Entity()
 export class Project {
-  @PrimaryGeneratedColumn()
   @ApiProperty({ description: 'project id' })
+  @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({ description: 'project name', example: 'Project name' })
   @Column()
-  @ApiProperty({ description: 'project name' })
   name: string;
 
+  @ApiProperty({
+    description: 'project description',
+    example: 'Project description',
+  })
   @Column()
-  @ApiProperty({ description: 'project description' })
   description: string;
 
-  @CreateDateColumn()
   @ApiProperty({ description: 'user creating date' })
+  @CreateDateColumn()
   createAt: Date;
 
-  @UpdateDateColumn()
   @ApiProperty({ description: 'user updating date' })
+  @UpdateDateColumn()
   updateAt: Date;
 
-  @ApiProperty({ description: 'Project user' })
   @ManyToOne(() => User, (user) => user.projects, { onDelete: 'CASCADE' })
   user: User;
 
-  @ApiProperty({ description: 'Project columns' })
   @OneToMany(() => TodoColumn, (todoColumn) => todoColumn.project)
   columns: TodoColumn[];
 }

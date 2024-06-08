@@ -12,30 +12,29 @@ import {
 @Entity()
 export class Task {
   @PrimaryGeneratedColumn()
-  @ApiProperty({ description: 'task id' })
+  @ApiProperty({ description: 'Task id' })
   id: number;
 
   @Column()
-  @ApiProperty({ description: 'task name' })
+  @ApiProperty({ description: 'Task name', example: 'Task name' })
   name: string;
 
   @Column()
-  @ApiProperty({ description: 'task description' })
+  @ApiProperty({ description: 'Task description', example: 'Task description' })
   description: string;
 
   @Column()
-  @ApiProperty({ description: 'task position' })
+  @ApiProperty({ description: 'Task position' })
   position: number;
 
   @CreateDateColumn()
-  @ApiProperty({ description: 'task creating date' })
+  @ApiProperty({ description: 'Task creating date' })
   createAt: Date;
 
   @UpdateDateColumn()
-  @ApiProperty({ description: 'task updating date' })
+  @ApiProperty({ description: 'Task updating date' })
   updateAt: Date;
 
-  @ApiProperty({ description: 'Task column' })
   @ManyToOne(() => TodoColumn, (todoColumn) => todoColumn.tasks, {
     onDelete: 'CASCADE',
   })

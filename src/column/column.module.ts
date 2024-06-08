@@ -16,5 +16,6 @@ import { ColumnService } from './column.service';
     ProjectModule,
     TypeOrmModule.forFeature([TodoColumn]),
   ],
+  exports: [ColumnService],
 })
 export class ColumnModule {}

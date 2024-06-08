@@ -16,17 +16,16 @@ export class User {
   id: number;
 
   @Column()
-  @ApiProperty({ description: 'user name' })
+  @ApiProperty({ description: 'user name', example: 'username' })
   name: string;
 
   @Column({
     unique: true,
   })
-  @ApiProperty({ description: 'user email' })
+  @ApiProperty({ description: 'user email', example: 'email@email.com' })
   email: string;
 
   @Column()
-  @ApiProperty({ description: 'user password' })
   password: string;
 
   @CreateDateColumn()

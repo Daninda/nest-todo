@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,7 +18,7 @@ export class TodoColumn {
   id: number;
 
   @Column()
-  @ApiProperty({ description: 'Column name' })
+  @ApiProperty({ description: 'Column name', example: 'Column name' })
   name: string;
 
   @Column()
@@ -32,13 +33,11 @@ export class TodoColumn {
   @ApiProperty({ description: 'Column updating date' })
   updateAt: Date;
 
-  @ApiProperty({ description: 'Column project' })
   @ManyToOne(() => Project, (project) => project.columns, {
     onDelete: 'CASCADE',
   })
   project: Project;
 
-  @ApiProperty({ description: 'Column project' })
-  @ManyToOne(() => Task, (task) => task.column)
+  @OneToMany(() => Task, (task) => task.column)
   tasks: Task[];
 }

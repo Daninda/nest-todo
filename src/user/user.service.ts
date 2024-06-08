@@ -54,6 +54,6 @@ export class UserService {
   async removeById(id: number) {
     const user = await this.findOneById(id);
     const removedUser = await this.userRepository.remove(user);
-    return removedUser;
+    return removedUser.id;
   }
 }

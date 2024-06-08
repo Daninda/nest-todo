@@ -10,19 +10,36 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
+import {
+  ApiCreatedResponse,
+  ApiHeader,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ApiPaginatedResponse } from 'src/decorators/api-paginated-resonse.decorator';
 import { UserId } from 'src/decorators/user-id.decorator';
+import { Task } from 'src/task/task.model';
+import { TodoColumn } from './column.model';
 import { ColumnService } from './column.service';
-import { ChangePositionDto } from './dto/change-position.dto';
+import { ChangeColumnPositionDto } from './dto/change-column-position.dto';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
 
+@ApiTags('Columns')
+@ApiHeader({
+  name: 'Authorization',
+  description: 'Access token',
+})
 @Controller('column')
+@UseGuards(JwtAuthGuard)
 export class ColumnController {
   constructor(private columnService: ColumnService) {}
 
+  @ApiOperation({ summary: 'Get project column by id' })
+  @ApiPaginatedResponse(TodoColumn, Task, 'tasks')
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   async getOneById(
     @UserId() userId: number,
     @Param('id', ParseIntPipe) id: number,
@@ -31,15 +48,21 @@ export class ColumnController {
     return column;
   }
 
+  @ApiOperation({ summary: 'Create project column' })
+  @ApiCreatedResponse({
+    type: TodoColumn,
+  })
   @Post()
-  @UseGuards(JwtAuthGuard)
   async create(@UserId() userId: number, @Body() columnDto: CreateColumnDto) {
     const column = await this.columnService.create(userId, columnDto);
     return column;
   }
 
+  @ApiOperation({ summary: 'Update project column by id' })
+  @ApiCreatedResponse({
+    type: TodoColumn,
+  })
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
   async updateById(
     @UserId() userId: number,
     @Param('id', ParseIntPipe) id: number,
@@ -49,8 +72,11 @@ export class ColumnController {
     return column;
   }
 
+  @ApiOperation({ summary: 'Remove project column by id' })
+  @ApiOkResponse({
+    type: Number,
+  })
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
   async removeById(
     @UserId() userId: number,
     @Param('id', ParseIntPipe) id: number,
@@ -59,18 +85,19 @@ export class ColumnController {
     return deletedId;
   }
 
+  @ApiOperation({ summary: 'Change project column position by id' })
+  @ApiPaginatedResponse(TodoColumn, Task, 'tasks')
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
   async changePositionById(
     @UserId() userId: number,
     @Param('id', ParseIntPipe) id: number,
-    @Body() changePositionDto: ChangePositionDto,
+    @Body() changePositionDto: ChangeColumnPositionDto,
   ) {
-    const project = await this.columnService.changePositionById(
+    const column = await this.columnService.changePositionById(
       userId,
       id,
       changePositionDto.newPosition,
     );
-    return project;
+    return column;
   }
 }

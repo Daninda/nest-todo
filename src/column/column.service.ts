@@ -4,9 +4,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Project } from 'src/project/project.model';
 import { ProjectService } from 'src/project/project.service';
-import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { TodoColumn } from './column.model';
 import { CreateColumnDto } from './dto/create-column.dto';
@@ -16,11 +14,8 @@ import { UpdateColumnDto } from './dto/update-column.dto';
 export class ColumnService {
   constructor(
     @InjectRepository(TodoColumn)
-    private projectRepository: Repository<Project>,
-    @InjectRepository(TodoColumn)
     private columnRepository: Repository<TodoColumn>,
     private projectService: ProjectService,
-    private userService: UserService,
   ) {}
 
   async findOneById(userId: number, id: number) {
@@ -114,9 +109,9 @@ export class ColumnService {
     }
     await this.columnRepository.save(columns);
 
-    project.columns = columns.sort((a, b) => a.position - b.position);
+    column.position = newPosition;
 
-    return project;
+    return column;
   }
 
   async checkColumnAbility(userId: number, columnId: number) {

@@ -7,7 +7,7 @@ import { ColumnModule } from './column/column.module';
 import { Project } from './project/project.model';
 import { ProjectModule } from './project/project.module';
 import { Task } from './task/task.model';
-import { TaskService } from './task/task.service';
+import { TaskModule } from './task/task.module';
 import { User } from './user/user.model';
 import { UserModule } from './user/user.module';
 
@@ -31,8 +31,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     ProjectModule,
     ColumnModule,
+    TaskModule,
   ],
-  controllers: [],
-  providers: [TaskService],
 })
 export class AppModule {}

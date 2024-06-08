@@ -1,10 +1,9 @@
 import { Body, Controller, Delete, Get, Put, UseGuards } from '@nestjs/common';
 import {
   ApiHeader,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
-  OmitType,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserId } from 'src/decorators/user-id.decorator';
@@ -18,16 +17,15 @@ import { UserService } from './user.service';
   description: 'Access token',
 })
 @Controller('user')
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
   @ApiOperation({ summary: 'Get user info' })
-  @ApiResponse({
-    status: 200,
-    type: OmitType(User, ['password']),
+  @ApiOkResponse({
+    type: User,
   })
   @Get()
-  @UseGuards(JwtAuthGuard)
   async getOne(@UserId() id: number) {
     const user = await this.userService.findOneById(id);
     delete user.password;
@@ -35,12 +33,10 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Update user info' })
-  @ApiResponse({
-    status: 200,
-    type: OmitType(User, ['password']),
+  @ApiOkResponse({
+    type: User,
   })
   @Put()
-  @UseGuards(JwtAuthGuard)
   async update(@UserId() id: number, @Body() userDto: UpdateUserDto) {
     const user = await this.userService.updateById(id, userDto);
     delete user.password;
@@ -48,15 +44,12 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Delete user' })
-  @ApiResponse({
-    status: 200,
-    type: OmitType(User, ['password']),
+  @ApiOkResponse({
+    type: Number,
   })
   @Delete()
-  @UseGuards(JwtAuthGuard)
   async remove(@UserId() id: number) {
-    const user = await this.userService.removeById(id);
-    delete user.password;
-    return user;
+    const deletedId = await this.userService.removeById(id);
+    return deletedId;
   }
 }
