@@ -1,15 +1,20 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
-import { TodoColumn } from './column/column.model';
-import { ColumnModule } from './column/column.module';
-import { Project } from './project/project.model';
-import { ProjectModule } from './project/project.module';
-import { Task } from './task/task.model';
-import { TaskModule } from './task/task.module';
-import { User } from './user/user.model';
-import { UserModule } from './user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { TodoColumn } from './modules/column/column.model';
+import { ColumnModule } from './modules/column/column.module';
+import { Project } from './modules/project/project.model';
+import { ProjectModule } from './modules/project/project.module';
+import { TaskFieldValueModule } from './modules/task-field-value/task-field-value.module';
+import { TaskFieldValueNumber } from './modules/task-field-value/task-field-value.number.model';
+import { TaskFieldValueString } from './modules/task-field-value/task-field-value.string.model';
+import { TaskField } from './modules/task-field/task-field.model';
+import { TaskFieldModule } from './modules/task-field/task-field.module';
+import { Task } from './modules/task/task.model';
+import { TaskModule } from './modules/task/task.module';
+import { User } from './modules/user/user.model';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -24,7 +29,15 @@ import { UserModule } from './user/user.module';
       username: process.env.POSTGRES_USERNAME,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [User, Project, TodoColumn, Task],
+      entities: [
+        User,
+        Project,
+        TodoColumn,
+        Task,
+        TaskField,
+        TaskFieldValueNumber,
+        TaskFieldValueString,
+      ],
       synchronize: true,
     }),
     UserModule,
@@ -32,6 +45,8 @@ import { UserModule } from './user/user.module';
     ProjectModule,
     ColumnModule,
     TaskModule,
+    TaskFieldModule,
+    TaskFieldValueModule,
   ],
 })
 export class AppModule {}
