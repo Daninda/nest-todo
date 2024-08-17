@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    env_file:
+      - .production.env
+    container_name: nest-todo-postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest-todo-app
+    env_file:
+      - .production.env
+    ports:
+      - '80:80'
+    depends_on:
+      - db
